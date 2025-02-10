@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { generateMnemonic } from "bip39";
+import { SolanaWallet } from "./SolanaWallet";
 
 export default function MnemonicGenerator() {
-  const [mnemonic, setMnemonic] = useState<string[]>([]);
+  const [mnemonic, setMnemonic] = useState<string>(""); // Store as a string
 
   function mnemonicSet() {
-    const mn = generateMnemonic(); // No need for async/await
-    setMnemonic(mn.split(" ")); // Convert to array
+    const mn = generateMnemonic(); // Generate a new mnemonic
+    setMnemonic(mn); // Store as a single string
   }
 
   return (
@@ -14,8 +15,10 @@ export default function MnemonicGenerator() {
       <div>Generate Your Seed Phrase!</div>
       <button onClick={mnemonicSet}>Generate</button>
       <div>
-        <MnemonicTable mnemonics={mnemonic} />
+        <MnemonicTable mnemonics={mnemonic.split(" ")} />
       </div>
+      {/* Pass the mnemonic to SolanaWallet */}
+      {mnemonic && <SolanaWallet mnemonic={mnemonic} />}
     </div>
   );
 }
