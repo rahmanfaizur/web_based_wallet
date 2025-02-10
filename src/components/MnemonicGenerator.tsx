@@ -1,50 +1,35 @@
 import { useState } from "react";
 import { generateMnemonic } from "bip39";
 import { SolanaWallet } from "./SolanaWallet";
+import  EthWallet from "./EthereumWallet";
+import Button from "./Button";
 
 export default function MnemonicGenerator() {
-  const [mnemonic, setMnemonic] = useState<string>(""); // Store as a string
+  const [mnemonic, setMnemonic] = useState("");
 
   function mnemonicSet() {
-    const mn = generateMnemonic(); // Generate a new mnemonic
-    setMnemonic(mn); // Store as a single string
+    const mn = generateMnemonic(); // No need for async/await
+    setMnemonic(mn); // Store as string
   }
 
   return (
-    <div>
-      <div>Generate Your Seed Phrase!</div>
-      <button onClick={mnemonicSet}>Generate</button>
-      <div>
-        <MnemonicTable mnemonics={mnemonic.split(" ")} />
-      </div>
-      {/* Pass the mnemonic to SolanaWallet */}
-      {mnemonic && <SolanaWallet mnemonic={mnemonic} />}
-    </div>
-  );
-}
+    <div className="p-6 bg-black text-white rounded-lg">
+      <h1 className="text-2xl font-bold mb-4">Generate Your Seed Phrase!</h1>
+      <Button onClick={mnemonicSet} size="lg" placeholder="Generate Mnemonic" className="mb-4" />
 
-export function MnemonicTable({ mnemonics }: { mnemonics: string[] }) {
-  return (
-    <div className="flex justify-center">
-      <table className="border border-gray-300 rounded-lg shadow-lg">
-        <tbody>
-          {Array.from({ length: 3 }).map((_, row) => (
-            <tr key={row} className="border border-gray-300">
-              {Array.from({ length: 4 }).map((_, col) => {
-                const index = row * 4 + col;
-                return (
-                  <td
-                    key={col}
-                    className="p-3 border border-gray-300 text-center font-semibold"
-                  >
-                    {mnemonics[index] || ""}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {mnemonic && (
+        <div className="p-3 border border-gray-600 rounded-lg mb-6">
+          <h3 className="text-lg font-semibold">Your Mnemonic:</h3>
+          <p className="text-green-400">{mnemonic}</p>
+        </div>
+      )}
+
+      {mnemonic && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SolanaWallet mnemonic={mnemonic} />
+          <EthWallet mnemonic={mnemonic} />
+        </div>
+      )}
     </div>
   );
 }
